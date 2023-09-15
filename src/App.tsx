@@ -13,8 +13,10 @@ import { SelectValue } from "@radix-ui/react-select";
 import { Slider } from "./components/ui/slider";
 import { VideoInputForm } from "./components/VideoInputForm";
 import { PromptSelect } from "./components/PromptSelect";
+import { useState } from "react";
 
 export function App() {
+  const [temperature, setTemperature] = useState<number>(0.5);
   function handlePromptSelected(template: string) {
     console.log("template", template);
   }
@@ -84,7 +86,13 @@ export function App() {
             <Separator />
             <div className="space-y-4">
               <Label>Temperatura</Label>
-              <Slider min={0} max={1} step={0.1} />
+              <Slider
+                value={[temperature]}
+                onValueChange={(value) => setTemperature(value[0])}
+                min={0}
+                max={1}
+                step={0.1}
+              />
               <span className="block text-sm text-muted-foreground italic leading-relaxed">
                 Valores mais altos tendem a deixar o resultado mais criativo e
                 com possíveis erros.
