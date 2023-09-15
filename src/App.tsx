@@ -11,7 +11,7 @@ import {
 } from "./components/ui/select";
 import { SelectValue } from "@radix-ui/react-select";
 import { Slider } from "./components/ui/slider";
-import { VideoInputForm } from "./components/ui/VideoInputForm";
+import { VideoInputForm } from "./components/VideoInputForm";
 
 export function App() {
   return (
