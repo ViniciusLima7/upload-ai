@@ -29,6 +29,7 @@ export function VideoInputForm({ onVideoUploaded }: VideoInputFormProps) {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const promptInputRef = useRef<HTMLTextAreaElement>(null);
   const [status, setStatus] = useState<Status>("waiting");
+  const [progress, setProgress] = useState(0);
   function handleFileSelected(event: ChangeEvent<HTMLInputElement>) {
     const { files } = event.currentTarget;
 
@@ -51,7 +52,10 @@ export function VideoInputForm({ onVideoUploaded }: VideoInputFormProps) {
     // });
 
     ffmpeg.on("progress", (progress) => {
-      console.log("Convert Progress: " + Math.round(progress.progress * 100));
+      console.log(
+        "Convert Progress: " + Math.round(progress.progress * 100) + "%"
+      );
+      setProgress(Math.round(progress.progress * 100));
     });
 
     await ffmpeg.exec([
@@ -115,6 +119,9 @@ export function VideoInputForm({ onVideoUploaded }: VideoInputFormProps) {
     return URL.createObjectURL(videoFile);
   }, [videoFile]);
 
+  const greenWidth = `calc(${progress}% + 1px)`;
+  const isConverting = statusMessage[status] === "Convertendo...";
+
   return (
     <form onSubmit={handleUploadVideo} className="space-y-6">
       <label
@@ -159,12 +166,19 @@ export function VideoInputForm({ onVideoUploaded }: VideoInputFormProps) {
         disabled={status !== "waiting"}
         type="submit"
         className="w-full data-[success=true]:bg-emerald-400"
+        style={{
+          background: isConverting
+            ? `linear-gradient(to right, #35eb90 0%, #35eb90 ${greenWidth}, #3576df ${greenWidth}, #3576df 100%)`
+            : "",
+        }}
       >
         {status === "waiting" ? (
           <>
             Carregar Video
             <Upload className="w-4 h-4 ml-2" />
           </>
+        ) : isConverting ? (
+          `${statusMessage[status]}  ${progress}%`
         ) : (
           statusMessage[status]
         )}
